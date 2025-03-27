@@ -22,9 +22,8 @@ export class ProductController {
   type: [CreateProductDto],
   })
   @ApiResponse({
-    status: 500,
-    description: 'Error',
-    type: [CreateProductDto],
+    status: 403,
+    description: 'Forbidden',
     })
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
