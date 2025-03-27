@@ -7,6 +7,7 @@ import { SalesModule } from './sales/sales.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductEntity } from './product/entities/product.entity';
 import { ConfigModule } from '@nestjs/config';
+import { UsuarioModule } from './usuario/usuario.module';
 
 
 @Module({
@@ -24,7 +25,7 @@ import { ConfigModule } from '@nestjs/config';
       synchronize: true, // Cambiar a false en producción
     }),
     TypeOrmModule.forFeature([ProductEntity]),
-    LoginModule, ProductModule, SalesModule],
+    LoginModule, ProductModule, SalesModule, UsuarioModule],
   controllers: [AppController],
   providers: [AppService],
 })
