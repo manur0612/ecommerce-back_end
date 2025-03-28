@@ -8,30 +8,33 @@ import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class ProductService {
-
-  constructor(@InjectRepository(ProductEntity)
+  constructor(
+    @InjectRepository(ProductEntity)
    private readonly productRepository: Repository<ProductEntity>,
   ){}
 
   async create(createProductDto: CreateProductDto): Promise<ProductEntity> {
+    const { price, isOferta, porcentajeOferta } = createProductDto;
 
-    const { finalPrice, porcentajeOferta } = createProductDto;
-
-    if (createProductDto.isOferta) {
-      const finalPrice = createProductDto.price * (porcentajeOferta / 100); 
-    } else {
-      createProductDto.finalPrice = createProductDto.price;
-    }      
-
+    // Calcular el precio final basado en si hay una oferta
+    const finalPrice = isOferta ? price * (1 - porcentajeOferta / 100) : price;
+  
+    // Crear una nueva instancia del producto con los datos proporcionados y el precio final calculado
     const nuevoProducto = this.productRepository.create({
       ...createProductDto,
       finalPrice,
-    });  
+    });
+  
+    // Guardar el nuevo producto en la base de datos y devolver la entidad guardada
     return await this.productRepository.save(nuevoProducto);
   }
 
    getAllProducts(): Promise<ProductEntity[]> {
      return this.productRepository.find();
+     select: {
+      name: true;
+      imgUrl: true;
+     }
    }
 
    async findAll(): Promise<ProductDto[]> {
@@ -51,12 +54,11 @@ export class ProductService {
 
   async findOne(id: number): Promise<ProductEntity> {
     const producto = await this.productRepository.findOne({
-      where: { id },
-      relations: ['categoria'],
+      where: { id }
     });
     
     if (!producto) {
-      throw new NotFoundException(`Producto with ID ${id} not found`);
+      throw new NotFoundException(`Producto con ID ${id} no encontrado`);
     }
     
     return producto;
@@ -64,10 +66,12 @@ export class ProductService {
 
   async update(id: number, updateProductDto: UpdateProductDto): Promise<ProductEntity> {
     const producto = await this.productRepository.findOne({ where: { id } });
+    
     if (!producto) {
       throw new NotFoundException(`Producto con ID ${id} no encontrado`);
     }
   
+    const { price, isOferta, porcentajeOferta } = updateProductDto;
     // Validación adicional: asegurarse de que 'price' y 'porcentajeOferta' sean positivos
     if (updateProductDto.price !== undefined && updateProductDto.price < 0) {
       throw new BadRequestException('El precio no puede ser negativo');
@@ -76,9 +80,19 @@ export class ProductService {
       throw new BadRequestException('El porcentaje de oferta debe estar entre 0 y 100');
     }
   
-    this.productRepository.merge(producto, updateProductDto);
+    let finalPrice = producto.finalPrice;
+    if (price !== undefined || isOferta !== undefined || porcentajeOferta !== undefined) {
+      const newPrice = price ?? producto.price;
+      const newIsOferta = isOferta ?? producto.isOferta;
+      const newPorcentajeOferta = porcentajeOferta ?? producto.porcentajeOferta;
+
+      finalPrice = newIsOferta ? newPrice * (1 - newPorcentajeOferta / 100) : newPrice;
+    }
+
+    this.productRepository.merge(producto, { ...updateProductDto, finalPrice });
     return await this.productRepository.save(producto);
   }
+  
 
   async remove(id: number): Promise<void> {
     const producto = await this.findOne(id);

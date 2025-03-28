@@ -1,4 +1,4 @@
-import { Usuario } from "src/usuario/entities/usuario.entity";
+import { UsuarioEntity } from "src/usuario/entities/usuario.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('login_history')
@@ -9,7 +9,7 @@ export class LoginHistory {
   @Column({ type: 'timestamp' })
   fecha_login: Date;
 
-  @ManyToOne(() => Usuario, (usuario) => usuario.loginHistories)
+  @ManyToOne(() => UsuarioEntity, (usuario) => usuario.loginHistories)
   @JoinColumn({ name: 'id_usuario' })
-  usuario: Usuario;
+  usuario: UsuarioEntity;
 }

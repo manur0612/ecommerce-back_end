@@ -1,26 +1,29 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
+import { IsNotEmpty, IsPositive } from "class-validator";
 
 export class CreateProductDto {
 
     @ApiProperty({
         description:'Nombre del producto',
         minLength: 3
-    })    
+    })
+    @IsNotEmpty()    
     nameProduct: string;
 
     @ApiProperty({
         description:'Precio del producto',
         maxLength: 250
-    })  
+    }) 
+    @IsPositive() 
+    @IsNotEmpty()  
     price:number;
 
     @ApiProperty({
         description:'Descripción del paquete turístico',
         maxLength: 250
-    })   
-    typeProduct:string;
-   
+    })
+    @IsNotEmpty() 
     description: string;
       
     isOferta: boolean;
@@ -40,16 +43,16 @@ export class CreateProductDto {
 export class ProductDto {
   
     @Expose() 
-    nameProduct: string;
+    name: string;
 
     @Expose()  
     price:number;
-
-    @Expose() 
-    typeProduct:string;
-    
+   
     @Expose()
     description: string;
+
+    @Expose()
+    imgUrl: string;
     
     @Expose()
     isOferta: boolean;

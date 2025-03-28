@@ -20,9 +20,13 @@ import { UsuarioModule } from './usuario/usuario.module';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      ssl: { rejectUnauthorized: false },
+     // ssl: { rejectUnauthorized: false },
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true, // Cambiar a false en producción
+      synchronize: false , // Cambiar a false en producción
+      retryAttempts: 2,
+      retryDelay: 1000,
+      connectTimeoutMS: 5000,
+      logging: true,
     }),
     TypeOrmModule.forFeature([ProductEntity]),
     LoginModule, ProductModule, SalesModule, UsuarioModule],

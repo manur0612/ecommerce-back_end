@@ -2,9 +2,9 @@ import { LoginHistory } from "src/login/entities/login.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('usuario')
-export class Usuario {
+export class UsuarioEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id_usuario: number;
 
   @Column({ length: 20 })
   nombre: string;
