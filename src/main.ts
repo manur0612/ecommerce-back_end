@@ -9,6 +9,8 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
+  app.enableCors();
+  
   const productConfig = new DocumentBuilder()
   .setTitle('product API')
   .setDescription('API for managing products')

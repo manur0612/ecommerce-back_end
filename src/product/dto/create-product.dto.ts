@@ -43,6 +43,9 @@ export class CreateProductDto {
 export class ProductDto {
   
     @Expose() 
+    id: string;
+
+    @Expose() 
     name: string;
 
     @Expose()  
@@ -58,9 +61,11 @@ export class ProductDto {
     isOferta: boolean;
   
     @Expose()
-    porcntOferta: number;
+    porcentajeOferta: number;
   
     @Expose()  
     finalPrice:number;
 
+    @Expose()  
+    active:boolean;
   }
