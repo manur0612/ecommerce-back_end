@@ -1,6 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateSaleDto, SaleDto } from './dto/create-sale.dto';
-import { UpdateSaleDto } from './dto/update-sale.dto';
 import { SaleEntity } from './entities/sale.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -10,12 +9,23 @@ import { plainToInstance } from 'class-transformer';
 export class SalesService {
     constructor(
     @InjectRepository(SaleEntity)
-    private ventaRepository: Repository<SaleEntity>,
+    private readonly saleRepository: Repository<SaleEntity>,  
+    //private ventaRepository: Repository<SaleEntity>,
   ) {}
 
   async createVenta(createVentaDto: CreateSaleDto): Promise<SaleEntity> {
-    const venta = this.ventaRepository.create(createVentaDto);
-    return this.ventaRepository.save(venta);
+    //const venta = this.ventaRepository.create(createVentaDto);
+    //return this.ventaRepository.save(venta);
+    if (!createVentaDto) {
+      throw new Error('Debe proporcionar al menos un item de venta');
+    }
+     
+    // Crear la venta principal
+    const newSale = this.saleRepository.create({
+      ...createVentaDto,
+    });
+     
+    return await this.saleRepository.save(newSale);
   }
 
   // create(createSaleDto: CreateSaleDto) {
@@ -24,7 +34,7 @@ export class SalesService {
 
   async findAll(): Promise<SaleDto[]>  {
     try {
-          const products = await this.ventaRepository.find({
+          const products = await this.saleRepository.find({
            
           });
       
@@ -37,9 +47,17 @@ export class SalesService {
         }
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} sale`;
-  // }
+  async findOne(id: number): Promise<SaleEntity> {
+    const Sale = await this.saleRepository.findOne({
+      where: { id: id },
+    });
+
+    if (!Sale) {
+      throw new Error(`Sale with id ${id} not found`);
+    }
+
+    return Sale;
+  }
 
   // update(id: number, updateSaleDto: UpdateSaleDto) {
   //   return `This action updates a #${id} sale`;

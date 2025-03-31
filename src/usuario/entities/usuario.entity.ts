@@ -1,4 +1,5 @@
 import { LoginHistory } from "src/login/entities/login.entity";
+import { SaleEntity } from "src/sales/entities/sale.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('usuario')
@@ -18,12 +19,15 @@ export class UsuarioEntity {
   @Column()
   password: string;
 
-  @Column({ type: 'date' })
-  fec_naci: Date;
+  @Column({name:"fec_naci", type: 'date' })
+  fechaNacimiento: Date;
 
   @Column()
   rol: string;
 
-  @OneToMany(() => LoginHistory, (loginHistory) => loginHistory.usuario)
+  @OneToMany(() => LoginHistory, (loginHistory) => loginHistory.usuarios)
   loginHistories: LoginHistory[];
+
+  @OneToMany(() => SaleEntity, loginHistory => loginHistory.usuarios)
+  ventas: SaleEntity[];
 }

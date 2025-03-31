@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn,} from "typeorm";
+import { SaleEntity } from "src/sales/entities/sale.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn,} from "typeorm";
 
 @Entity('products')
     export class ProductEntity {
@@ -28,4 +29,8 @@ import { Column, Entity, PrimaryGeneratedColumn,} from "typeorm";
 
     @Column({ default: true })
     active: boolean;
+
+    @OneToMany(() => SaleEntity, detalleVenta => detalleVenta.productos)
+    ventas: SaleEntity[];
+
     }

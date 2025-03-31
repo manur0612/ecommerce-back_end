@@ -2,14 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UnauthorizedExceptio
 import { LoginService } from './login.service';
 import { CreateLoginDto } from './dto/create-login.dto';
 import { UpdateLoginDto } from './dto/update-login.dto';
+import { UsuarioDto } from 'src/usuario/dto/create-usuario.dto';
 
 @Controller('login')
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
   @Post()
-  async login(@Body() createLoginDto: CreateLoginDto) {
-    const user = await this.loginService.validateUser(createLoginDto.usuario, createLoginDto.password);
+  async login(@Body() usuarioDto: UsuarioDto) {
+    const { usuario, password } = usuarioDto;
+    const user = await this.loginService.validateUser(usuario, password);
     if (!user) {
       throw new UnauthorizedException('Credenciales incorrectas');
     }

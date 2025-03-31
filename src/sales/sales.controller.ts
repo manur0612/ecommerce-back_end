@@ -1,28 +1,43 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { SalesService } from './sales.service';
-import { CreateSaleDto } from './dto/create-sale.dto';
+import { CreateSaleDto, SaleDto } from './dto/create-sale.dto';
 import { UpdateSaleDto } from './dto/update-sale.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SaleEntity } from './entities/sale.entity';
 
 @ApiTags('Sales api controller')
 @Controller('sales')
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
 
+  @ApiOperation({ summary: 'Create a new Sale' })
+  @ApiBody({ type: CreateSaleDto })
+  @ApiResponse({ status: 201, description: 'new Sale' })
   @Post()
+  @UsePipes(ValidationPipe) 
   create(@Body() createSaleDto: CreateSaleDto) {
     return this.salesService.createVenta(createSaleDto);
   }
 
+  @ApiOperation({ summary: 'List all Sales' })
+  @ApiResponse({
+      status: 200,
+      description: 'List of Sales',
+      type: [SaleDto],
+    })
   @Get()
-  findAll() {
+  findAll(): Promise<SaleDto[]> {
     return this.salesService.findAll();
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.salesService.findOne(+id);
-  // }
+  @ApiOperation({ summary: 'Get Sales by ID' })
+  @ApiParam({ name: 'id', type: String })
+  @ApiResponse({ status: 200, description: 'Sales details', 
+      type: SaleEntity })  
+  @Get(':id')
+  async findOne(@Param('id') id: number) {
+    return await this.salesService.findOne(id);
+  }
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateSaleDto: UpdateSaleDto) {

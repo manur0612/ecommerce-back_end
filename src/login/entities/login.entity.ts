@@ -6,10 +6,13 @@ export class LoginHistory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'timestamp' })
-  fecha_login: Date;
+  @Column({name:"fecha_login", type: 'timestamp' })
+  fechaLogin: Date;
+
+  @Column({name:"id_usuario"})
+  idUsuario: number;
 
   @ManyToOne(() => UsuarioEntity, (usuario) => usuario.loginHistories)
   @JoinColumn({ name: 'id_usuario' })
-  usuario: UsuarioEntity;
+  usuarios: UsuarioEntity;
 }

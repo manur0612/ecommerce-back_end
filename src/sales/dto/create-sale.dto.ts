@@ -20,6 +20,10 @@ export class CreateSaleDto {
 
 
 export class SaleDto {  
+    
+    @Expose() 
+      id: number;
+
     @Expose() 
     idProducts: number;
 

@@ -22,12 +22,11 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "t
     @Column({name:"nombre_pasajero"})
     nombrePasajero: string;
 
-     // Relaciones (opcional)
-    // @ManyToOne(() => ProductEntity, product => product.ventas)
-    // @JoinColumn({ name: 'id_products' })
-    // product: ProductEntity;
+    @ManyToOne(() => ProductEntity, product => product.ventas)
+    @JoinColumn({ name: 'id_products' })
+    productos: ProductEntity;
 
-    // @ManyToOne(() => UsuarioEntity, usuario => usuario.ventas)
-    // @JoinColumn({ name: 'id_usuario' })
-    // usuario: UsuarioEntity;
+    @ManyToOne(() => UsuarioEntity, usuario => usuario.ventas)
+    @JoinColumn({ name: 'id_usuario' })
+    usuarios: UsuarioEntity;
     }
